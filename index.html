@@ -153,18 +153,15 @@
     </div>
 
     <div class="section response-section">
-        <p>Bạn mún nhận quà theo hình thức khác hong???</p>
+        <p>Bạn muốn nhận quà theo hình thức khác hong???</p>
         <button onclick="showMessage(true)">Có</button>
         <button onclick="showMessage(false)">Không</button>
     </div>
 
-    <p id="response" class="trigger-text"></p>
-
     <!-- Hộp thoại -->
     <div id="dialog" class="dialog-box">
         <h2>Lời chúc từ QChun 🎉</h2>
-        <p>Xin chàooo người đẹp, dù mình chưa trò chuyện lâu cũng chưa thiệt sự thân thiết nhưng chúc người đẹp sẽ có 1 sinh nhật vui vẻ, tuổi mới nhiều niềm vui mới :Đ, thi môn nào điểm môn đó cao chót vót lunnnnn 🥰</p>
-        <p>Chúc mừng sinh nhật nhennn =3= &lt;33</p>
+        <p></p>
         <button class="close-btn" onclick="closeDialog()">Đóng</button>
     </div>
 
@@ -177,16 +174,15 @@
             setTimeout(() => {
                 flame.style.display = 'none'; // Ẩn ngọn lửa sau khi tắt
                 createHearts();
-                showDialog();
+                showDialog('Xin chàooo người đẹp, dù mình chưa trò chuyện lâu cũng chưa thiệt sự thân thiết nhưng chúc người đẹp sẽ có 1 sinh nhật vui vẻ, tuổi mới nhiều niềm vui mới :Đ, thi môn nào điểm môn đó cao chót vót lunnnnn 🥰 Chúc mừng sinh nhật nhennn =3=');
             }, 1000);
         }
 
         function showMessage(isYes) {
-            const response = document.getElementById('response');
             if (isYes) {
-                response.innerText = 'Tuyệt vời, bạn sẽ nhận được một bất ngờ lớn!🥳 gửi mình địa chỉ bạn muốn nhận quà qua tin nhắn đii nè';
+                showDialog('Tuyệt vời, bạn sẽ nhận được một bất ngờ lớn!🥳 gửi mình địa chỉ bạn muốn nhận quà qua tin nhắn đii nè');
             } else {
-                response.innerText = 'Không sao, chúc bạn sinh nhật thật hạnh phúc! 🌸';
+                showDialog('Chúc bạn sinh nhật vui vẻ nhooo!');
             }
         }
 
@@ -205,8 +201,10 @@
             }
         }
 
-        function showDialog() {
+        function showDialog(message) {
             const dialog = document.getElementById('dialog');
+            const dialogContent = dialog.querySelector('p');
+            dialogContent.innerText = message;
             dialog.style.display = 'block';
         }
 
