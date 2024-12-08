@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday</title>
+    <style>
+        body {
+            background-color: #ffe6f0; /* Nền hồng nhạt */
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Ẩn nội dung vượt quá màn hình */
+        }
+
+        h1 {
+            color: #ff66b3; /* Màu hồng đậm */
+            margin-top: 30px;
+        }
+
+        .section {
+            margin: 20px auto;
+            padding: 20px;
+            border: 2px solid #ff99cc; /* Viền hồng nhạt */
+            border-radius: 10px;
+            background-color: #fff; /* Nền trắng */
+            width: 80%;
+            max-width: 500px;
+        }
+
+        button {
+            background-color: #ff66b3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #ff3385; /* Đậm hơn khi hover */
+        }
+
+        .cake-container {
+            position: relative;
+            margin: 20px auto;
+            font-size: 100px; /* Phóng to icon bánh kem */
+        }
+
+        .flame {
+            position: absolute;
+            top: -1px; /* Điều chỉnh ngọn lửa nằm phía trên bánh */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 25px;
+            background: radial-gradient(circle, yellow, orange, red);
+            border-radius: 50%;
+            animation: flicker 0.2s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0% { transform: translateX(-50%) scale(1); }
+            100% { transform: translateX(-50%) scale(0.95); }
+        }
+
+        .dialog-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            border: 3px solid #ff66b3; /* Viền hồng */
+            border-radius: 10px;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+        }
+
+        .dialog-box h2 {
+            color: #ff66b3;
+            margin-bottom: 15px;
+        }
+
+        .dialog-box p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .dialog-box .close-btn {
+            background-color: #ff66b3;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .dialog-box .close-btn:hover {
+            background-color: #ff3385;
+        }
+
+        .heart {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background-color: #ff66b3;
+            transform: translateX(-50%);
+            clip-path: polygon(50% 0%, 100% 35%, 82% 100%, 50% 80%, 18% 100%, 0% 35%);
+            opacity: 0.8;
+            animation: rise 3s linear infinite;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateX(-50%) scale(1) translateY(0);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateX(-50%) scale(1.5) translateY(-100vh);
+                opacity: 0;
+            }
+        }
+
+        .response-section {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Happy Birthday 🎉</h1>
+    <p>Xin chàoo, mình là <b>QChun</b>!</p>
+
+    <div class="section">
+        <p>Nhấn nút dưới đây để thổi nến nèeee! 🎂</p>
+        <div class="cake-container">
+            <div class="flame" id="flame"></div> <!-- Ngọn lửa -->
+            <div>🎂</div> <!-- Icon bánh kem -->
+        </div>
+        <button onclick="blowCandle()">Thổi nến</button>
+    </div>
+
+    <div class="section response-section">
+        <p>Bạn mún nhận quà theo hình thức khác hong???</p>
+        <button onclick="showMessage(true)">Có</button>
+        <button onclick="showMessage(false)">Không</button>
+    </div>
+
+    <p id="response" class="trigger-text"></p>
+
+    <!-- Hộp thoại -->
+    <div id="dialog" class="dialog-box">
+        <h2>Lời chúc từ QChun 🎉</h2>
+        <p>Xin chàooo người đẹp, dù mình chưa trò chuyện lâu cũng chưa thiệt sự thân thiết nhưng chúc người đẹp sẽ có 1 sinh nhật vui vẻ, tuổi mới nhiều niềm vui mới :Đ, thi môn nào điểm môn đó cao chót vót lunnnnn 🥰</p>
+        <p>Chúc mừng sinh nhật nhennn =3= &lt;33</p>
+        <button class="close-btn" onclick="closeDialog()">Đóng</button>
+    </div>
+
+    <div id="hearts-container"></div>
+
+    <script>
+        function blowCandle() {
+            const flame = document.getElementById('flame');
+            flame.style.animation = 'fadeOut 1s forwards';
+            setTimeout(() => {
+                flame.style.display = 'none'; // Ẩn ngọn lửa sau khi tắt
+                createHearts();
+                showDialog();
+            }, 1000);
+        }
+
+        function showMessage(isYes) {
+            const response = document.getElementById('response');
+            if (isYes) {
+                response.innerText = 'Tuyệt vời, bạn sẽ nhận được một bất ngờ lớn!🥳 gửi mình địa chỉ bạn muốn nhận quà qua tin nhắn đii nè';
+            } else {
+                response.innerText = 'Không sao, chúc bạn sinh nhật thật hạnh phúc! 🌸';
+            }
+        }
+
+        function createHearts() {
+            const heartsContainer = document.getElementById('hearts-container');
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDelay = Math.random() * 3 + 's';
+                heart.style.backgroundColor = `rgba(255, 102, 179, ${Math.random()})`;
+                heartsContainer.appendChild(heart);
+
+                // Xóa trái tim sau khi hoàn thành animation
+                setTimeout(() => heart.remove(), 3000);
+            }
+        }
+
+        function showDialog() {
+            const dialog = document.getElementById('dialog');
+            dialog.style.display = 'block';
+        }
+
+        function closeDialog() {
+            const dialog = document.getElementById('dialog');
+            dialog.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
