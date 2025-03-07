@@ -1,216 +1,262 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday</title>
+    <title>Lời Nhắn Trong Phong Thư</title>
     <style>
         body {
-            background-color: #ffe6f0; /* Nền hồng nhạt */
-            font-family: 'Arial', sans-serif;
-            color: #333;
-            text-align: center;
             margin: 0;
-            padding: 0;
-            overflow: hidden; /* Ẩn nội dung vượt quá màn hình */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ffe6f0 0%, #ff99cc 100%);
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+            position: relative; /* Thêm để định vị .hearts */
         }
 
-        h1 {
-            color: #ff66b3; /* Màu hồng đậm */
-            margin-top: 30px;
-        }
-
-        .section {
-            margin: 20px auto;
-            padding: 20px;
-            border: 2px solid #ff99cc; /* Viền hồng nhạt */
-            border-radius: 10px;
-            background-color: #fff; /* Nền trắng */
-            width: 80%;
-            max-width: 500px;
-        }
-
-        button {
-            background-color: #ff66b3;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            margin: 10px;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #ff3385; /* Đậm hơn khi hover */
-        }
-
-        .cake-container {
+        /* Phong thư */
+        .envelope {
+            width: 350px;
+            height: 250px;
             position: relative;
-            margin: 20px auto;
-            font-size: 100px; /* Phóng to icon bánh kem */
+            perspective: 1000px;
+            cursor: pointer;
+            z-index: 5; /* Đảm bảo phong thư ở trên trái tim */
         }
 
-        .flame {
+        .envelope-back {
+            width: 100%;
+            height: 100%;
+            background: #ffb6c1;
             position: absolute;
-            top: -1px; /* Điều chỉnh ngọn lửa nằm phía trên bánh */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 15px;
-            height: 25px;
-            background: radial-gradient(circle, yellow, orange, red);
-            border-radius: 50%;
-            animation: flicker 0.2s infinite alternate;
+            border: 2px solid #ff69b4;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
-        @keyframes flicker {
-            0% { transform: translateX(-50%) scale(1); }
-            100% { transform: translateX(-50%) scale(0.95); }
+        .envelope-flap {
+            width: 100%;
+            height: 50%;
+            background: #ffc1cc;
+            position: absolute;
+            top: 0;
+            border-bottom: 2px solid #ff69b4;
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            transform-origin: top;
+            transition: transform 0.6s ease;
+            z-index: 2;
         }
 
-        .dialog-box {
-            position: fixed;
+        .envelope-front {
+            width: 80%;
+            height: 70%;
+            background: #fff;
+            position: absolute;
+            top: 15%;
+            left: 10%;
+            border: 1px solid #ff69b4;
+            z-index: 1;
+            transition: transform 0.5s ease;
+        }
+
+        .envelope:hover .envelope-flap {
+            transform: rotateX(-180deg);
+        }
+
+        .envelope:hover .envelope-front {
+            transform: translateY(-20px);
+        }
+
+        .envelope::before {
+            content: '💌';
+            font-size: 50px;
+            position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: #fff;
-            border: 3px solid #ff66b3; /* Viền hồng */
-            border-radius: 10px;
-            padding: 20px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            display: none;
+            z-index: 3;
+            color: #ff69b4;
         }
 
-        .dialog-box h2 {
-            color: #ff66b3;
-            margin-bottom: 15px;
-        }
-
-        .dialog-box p {
-            font-size: 16px;
-            line-height: 1.5;
-            color: #333;
-        }
-
-        .dialog-box .close-btn {
-            background-color: #ff66b3;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-
-        .dialog-box .close-btn:hover {
-            background-color: #ff3385;
+        /* Hiệu ứng trái tim */
+        .hearts {
+            position: fixed; /* Đặt ở cấp độ toàn màn hình */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Đặt dưới phong thư và modal */
+            pointer-events: none;
         }
 
         .heart {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
+            position: absolute;
             width: 20px;
             height: 20px;
-            background-color: #ff66b3;
-            transform: translateX(-50%);
-            clip-path: polygon(50% 0%, 100% 35%, 82% 100%, 50% 80%, 18% 100%, 0% 35%);
-            opacity: 0.8;
-            animation: rise 3s linear infinite;
+            transform: rotate(-45deg);
+            animation: float 2.5s ease infinite;
+            opacity: 0;
+            filter: drop-shadow(0 0 5px rgba(255, 105, 180, 0.8));
         }
 
-        @keyframes rise {
-            0% {
-                transform: translateX(-50%) scale(1) translateY(0);
+        .heart:nth-child(1n) { background: #ff69b4; }
+        .heart:nth-child(2n) { background: #ff1493; }
+        .heart:nth-child(3n) { background: #ff00ff; }
+        .heart:nth-child(4n) { background: #ff6eb4; }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            width: inherit;
+            height: inherit;
+            border-radius: 50%;
+            background: inherit;
+        }
+
+        .heart::before {
+            top: var(--before-top, -10px);
+            left: 0;
+        }
+
+        .heart::after {
+            left: var(--after-left, 10px);
+            top: 0;
+        }
+
+        @keyframes float {
+            0% { 
+                transform: translateY(0) rotate(-45deg) scale(1); 
+                opacity: 1;
+            }
+            50% { 
+                transform: translateY(-50vh) rotate(-45deg) scale(1.2); 
                 opacity: 0.8;
             }
-            100% {
-                transform: translateX(-50%) scale(1.5) translateY(-100vh);
+            100% { 
+                transform: translateY(-100vh) rotate(-45deg) scale(0.8); 
                 opacity: 0;
             }
         }
 
-        .response-section {
-            margin-top: 20px;
+        /* Hộp thoại */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background: #fff url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border: 3px solid #ffc1cc;
+            animation: slideIn 0.5s ease;
+            z-index: 15; /* Đảm bảo modal ở trên trái tim */
+        }
+
+        .modal-content p {
+            font-size: 18px;
+            color: #333;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 30px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #ff69b4;
+            transition: transform 0.3s;
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
     </style>
 </head>
 <body>
-    <h1>Happy Birthday 🎉</h1>
-    <p>Xin chàoo, mình là <b>QChun</b>!</p>
+    <div class="envelope" onclick="openModal()">
+        <div class="envelope-back"></div>
+        <div class="envelope-flap"></div>
+        <div class="envelope-front"></div>
+    </div>
+    <div class="hearts" id="hearts"></div> <!-- Di chuyển ra ngoài envelope -->
 
-    <div class="section">
-        <p>Nhấn nút dưới đây để thổi nến nèeee! 🎂</p>
-        <div class="cake-container">
-            <div class="flame" id="flame"></div> <!-- Ngọn lửa -->
-            <div>🎂</div> <!-- Icon bánh kem -->
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">×</button>
+            <p>"Hallu eiuuu :D hôm nay dù không biết em đang vui hay đang buồn nhưng thông điệp của ngày hôm nay là: Em xinh nhất khi em cười và hãy luôn để nụ cười trên môi như bông hoa luôn nở"</p>
         </div>
-        <button onclick="blowCandle()">Thổi nến</button>
     </div>
-
-    <div class="section response-section">
-        <p>Bạn muốn nhận quà theo hình thức khác hong???</p>
-        <button onclick="showMessage(true)">Có</button>
-        <button onclick="showMessage(false)">Không</button>
-    </div>
-
-    <!-- Hộp thoại -->
-    <div id="dialog" class="dialog-box">
-        <h2>Lời chúc từ QChun 🎉</h2>
-        <p></p>
-        <button class="close-btn" onclick="closeDialog()">Đóng</button>
-    </div>
-
-    <div id="hearts-container"></div>
 
     <script>
-        function blowCandle() {
-            const flame = document.getElementById('flame');
-            flame.style.animation = 'fadeOut 1s forwards';
-            setTimeout(() => {
-                flame.style.display = 'none'; // Ẩn ngọn lửa sau khi tắt
-                createHearts();
-                showDialog('Xin chàooo người đẹp, dù mình chưa trò chuyện lâu cũng chưa thiệt sự thân thiết nhưng chúc người đẹp sẽ có 1 sinh nhật vui vẻ, tuổi mới nhiều niềm vui mới :Đ, thi môn nào điểm môn đó cao chót vót lunnnnn 🥰 Chúc mừng sinh nhật nhennn =3=');
-            }, 1000);
+        function openModal() {
+            document.getElementById("messageModal").style.display = "flex";
+            spawnHearts();
         }
 
-        function showMessage(isYes) {
-            if (isYes) {
-                showDialog('Tuyệt vời, bạn sẽ nhận được một bất ngờ lớn!🥳 gửi mình địa chỉ bạn muốn nhận quà qua tin nhắn đii nè');
-            } else {
-                showDialog('Chúc bạn sinh nhật vui vẻ nhooo!');
-            }
+        function closeModal() {
+            document.getElementById("messageModal").style.display = "none";
         }
 
-        function createHearts() {
-            const heartsContainer = document.getElementById('hearts-container');
-            for (let i = 0; i < 20; i++) {
-                const heart = document.createElement('div');
-                heart.className = 'heart';
-                heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.animationDelay = Math.random() * 3 + 's';
-                heart.style.backgroundColor = `rgba(255, 102, 179, ${Math.random()})`;
+        function spawnHearts() {
+            const heartsContainer = document.getElementById("hearts");
+            heartsContainer.innerHTML = ''; // Xóa trái tim cũ
+            for (let i = 0; i < 20; i++) { // Tăng số lượng trái tim lên 20
+                const heart = document.createElement("div");
+                heart.className = "heart";
+                // Tạo vị trí ngẫu nhiên toàn màn hình
+                heart.style.left = `${Math.random() * 100}vw`;
+                heart.style.top = `${Math.random() * 100}vh`;
+                // Thêm kích thước ngẫu nhiên
+                const size = Math.random() * 15 + 15; // Kích thước từ 15px đến 30px
+                heart.style.width = `${size}px`;
+                heart.style.height = `${size}px`;
+                heart.style.animationDelay = `${Math.random() * 0.5}s`;
+                // Điều chỉnh before/after theo kích thước
+                heart.style.setProperty('--before-top', `-${size/2}px`);
+                heart.style.setProperty('--after-left', `${size/2}px`);
                 heartsContainer.appendChild(heart);
-
-                // Xóa trái tim sau khi hoàn thành animation
-                setTimeout(() => heart.remove(), 3000);
+                setTimeout(() => heart.remove(), 2500); // Thời gian phù hợp animation
             }
         }
 
-        function showDialog(message) {
-            const dialog = document.getElementById('dialog');
-            const dialogContent = dialog.querySelector('p');
-            dialogContent.innerText = message;
-            dialog.style.display = 'block';
-        }
-
-        function closeDialog() {
-            const dialog = document.getElementById('dialog');
-            dialog.style.display = 'none';
+        window.onclick = function(event) {
+            const modal = document.getElementById("messageModal");
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
         }
     </script>
 </body>
